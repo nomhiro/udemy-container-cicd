@@ -27,7 +27,7 @@ jobs:
 
     # Docker Compose を使用してイメージをビルドし、ACR にプッシュ
     - run: |
-        docker-compose -f docker-compose.yml build
+        docker-compose -f docker-compose.prod.yml build
         docker tag todo-app:latest acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
         docker push acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
 
