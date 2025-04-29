@@ -26,7 +26,11 @@ jobs:
         password: ${{ secrets.REGISTRY_PASSWORD }} # ACRのパスワード
 
     # Docker Compose を使用してイメージをビルドし、ACR にプッシュ
-    - run: |
+    - name: Build and Push Docker Image
+      env:
+        COSMOS_DB_ENDPOINT: ${{ secrets.COSMOS_DB_ENDPOINT }}
+        COSMOS_DB_KEY: ${{ secrets.COSMOS_DB_KEY }}
+      run: |
         docker-compose -f docker-compose.prod.yml build
         docker tag todo-app:latest acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
         docker push acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
