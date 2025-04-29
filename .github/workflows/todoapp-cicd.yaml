@@ -1,0 +1,33 @@
+name: ToDo App Workflow
+
+# このワークフローは、リポジトリにプッシュされたときにトリガーされます
+on: [push]
+
+jobs:
+  build:
+    # Ubuntu 最新バージョンのランナーを使用
+    runs-on: ubuntu-latest
+
+    steps:
+    # リポジトリのコードをチェックアウト
+    - uses: actions/checkout@v2
+
+    # Azure Container Registry (ACR) にログイン
+    - uses: azure/docker-login@v1
+      with:
+        login-server: acrudemylearn-b6gjgtfqcpedffhj.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }} # ACRのユーザー名
+        password: ${{ secrets.REGISTRY_PASSWORD }} # ACRのパスワード
+
+    # Docker Compose を使用してイメージをビルドし、ACR にプッシュ
+    - run: |
+        docker-compose -f docker-compose.yml build # docker-compose.yml を使用してビルド
+        docker tag todo-app:latest acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }} # イメージにタグ付け
+        docker push acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }} # ACR にプッシュ
+
+    # Azure Web App にデプロイ
+    - uses: azure/webapps-deploy@v2
+      with:
+        app-name: todoapp-udemy-learn # デプロイ先の Azure App Service 名
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # Azure App Service の公開プロファイル
+        images: acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }} # デプロイする Docker イメージ

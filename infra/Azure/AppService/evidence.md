@@ -17,3 +17,56 @@ CORS設定
 ![alt text](image-6.png)
 
 # GitHubActionsでのCI/CD
+https://learn.microsoft.com/ja-jp/azure/app-service/deploy-container-github-action?tabs=publish-profile&pivots=github-actions-containers-linux
+
+SCM基本認証をONに
+![alt text](image-7.png)
+
+プロファイルのDownload
+![alt text](image-8.png)
+
+## GitHubにシークレット登録
+
+### 認証用プロファイル
+
+GitHub側でリポジトリシークレットを作成
+![alt text](image-9.png)
+
+Name：AZURE_WEBAPP_PUBLISH_PROFILE
+Secret：ダウンロードしたプロファイルの内容をそのままペースト
+![alt text](image-10.png)
+
+![alt text](image-11.png)
+
+### コンテナレジストリ用
+
+![alt text](image-12.png)
+
+Name：REGISTRY_USERNAME
+Secret：acrudemylearn
+
+Name：REGISTRY_PASSWORD
+Secret：パスワード
+
+![alt text](image-13.png)
+
+## yamlファイルの作成
+```yaml
+name: ToDo App Workflow
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: azure/docker-login@v1
+      with:
+        login-server: acrudemylearn-b6gjgtfqcpedffhj.azurecr.io
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - run: |
+        docker build . -t acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
+        docker push acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
