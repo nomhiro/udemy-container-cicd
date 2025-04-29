@@ -31,7 +31,7 @@ jobs:
         COSMOS_DB_ENDPOINT: ${{ secrets.COSMOS_DB_ENDPOINT }}
         COSMOS_DB_KEY: ${{ secrets.COSMOS_DB_KEY }}
       run: |
-        docker-compose -f docker-compose.prod.yml build --build-arg COSMOS_DB_ENDPOINT=${{ secrets.COSMOS_DB_ENDPOINT }} --build-arg COSMOS_DB_KEY=${{ secrets.COSMOS_DB_KEY }}
+        docker-compose -f docker-compose.prod.yml build
         docker tag todo-app:latest acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
         docker push acrudemylearn-b6gjgtfqcpedffhj.azurecr.io/todoapp:${{ github.sha }}
 

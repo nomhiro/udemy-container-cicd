@@ -6,9 +6,6 @@ services:
     build:
       context: ./todo-app
       dockerfile: Dockerfile
-      args:
-        - COSMOS_DB_ENDPOINT
-        - COSMOS_DB_KEY
     ports:
       - "3000:3000"
     environment:
