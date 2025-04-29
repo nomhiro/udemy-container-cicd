@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import { Todo } from '../types/todo';
@@ -12,27 +12,12 @@ interface TodoListProps {
 }
 
 const TodoList: React.FC<TodoListProps> = ({ todos, onEdit, onDelete }) => {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // データ取得のシミュレーション
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const handleDelete = async (id: string) => {
     if (confirm('Are you sure you want to delete this task?')) {
       await onDelete(id);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="bg-white dark:bg-gray-800 p-4 rounded shadow-md h-[calc(100vh-96px)] flex items-center justify-center">
-        <p className="text-lg font-semibold">Loading...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded shadow-md h-[calc(100vh-96px)] overflow-y-auto">
@@ -78,8 +63,6 @@ const TodoList: React.FC<TodoListProps> = ({ todos, onEdit, onDelete }) => {
               <p><strong>Description:</strong> {todo.description}</p>
               <p><strong>Status:</strong> {todo.status}</p>
               <p><strong>Due:</strong> {new Date(todo.dueDate).toLocaleString()}</p>
-              <p><strong>Created At:</strong> {new Date(todo.createdAt).toLocaleString()}</p>
-              <p><strong>Updated At:</strong> {new Date(todo.updatedAt).toLocaleString()}</p>
             </Tooltip>
           </li>
         ))}

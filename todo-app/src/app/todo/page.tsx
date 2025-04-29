@@ -3,11 +3,11 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import TodoList from '../../components/TodoList';
-import CalendarView from '../../components/CalendarView'; // 新しいカレンダーコンポーネントをインポート
+import CalendarView from '../../components/CalendarView';
 import { Todo } from '../../types/todo';
 import { FaPlus } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import Loading from '../loading'; // Loadingコンポーネントをインポート
+import Loading from '../loading';
 
 const TodoPage = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -15,8 +15,8 @@ const TodoPage = () => {
 
   useEffect(() => {
     const fetchTodos = async () => {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
-      const response = await fetch(`${apiBaseUrl}/api/todo`);
+      // const apiBaseUrl = process.env.API_BASE_URL;
+      const response = await fetch(`/api/todo`);
       const data: Todo[] = await response.json();
       setTodos(data);
     };
@@ -25,26 +25,24 @@ const TodoPage = () => {
   }, []);
 
   const handleEdit = (todo: Todo) => {
-    router.push(`/todo/edit/${todo.id}?title=${encodeURIComponent(todo.title)}&description=${encodeURIComponent(todo.description)}&status=${todo.status}&dueDate=${encodeURIComponent(todo.dueDate)}`);
+    router.push(`/todo/edit/${todo.id}`);
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this task?')) {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+    // const apiBaseUrl = process.env.API_BASE_URL;
 
-      const response = await fetch(`${apiBaseUrl}/api/todo`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id }),
-      });
+    const response = await fetch(`/api/todo`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    });
 
-      if (response.ok) {
-        setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
-      } else {
-        console.error('Failed to delete todo');
-      }
+    if (response.ok) {
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } else {
+      console.error('Failed to delete todo');
     }
   };
 

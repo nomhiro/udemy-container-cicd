@@ -16,17 +16,27 @@ const containerId = 'ToDo';
 
 const client = new CosmosClient({ endpoint, key });
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get('id');
+
   try {
     const database = client.database(databaseId);
     const container = database.container(containerId);
 
-    const { resources: todos } = await container.items.readAll().fetchAll();
-
-    // dueDateが近い順に並び替え
-    todos.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
-
-    return NextResponse.json(todos);
+    if (id) {
+      // 特定のIDのTODOを取得
+      const { resource } = await container.item(id, id).read();
+      if (!resource) {
+        return NextResponse.json({ error: 'Todo not found' }, { status: 404 });
+      }
+      return NextResponse.json(resource);
+    } else {
+      // 全TODOを取得
+      const { resources: todos } = await container.items.readAll().fetchAll();
+      todos.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+      return NextResponse.json(todos);
+    }
   } catch (error) {
     console.error('Error fetching todos from Cosmos DB:', error);
     return NextResponse.json({ error: 'Failed to fetch todos' }, { status: 500 });

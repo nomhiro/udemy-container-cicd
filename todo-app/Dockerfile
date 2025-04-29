@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # アプリケーションをビルド
-RUN npm run build && ls -la .next
+RUN npm run build
 
 # 実行環境用の軽量イメージを使用
 FROM node:22-alpine AS production

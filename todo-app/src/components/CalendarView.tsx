@@ -48,6 +48,7 @@ const CalendarView: React.FC<CalendarViewProps> = ({ todos, onEdit }) => {
           endAccessor="end"
           style={{ height: 500 }}
           culture="ja"
+          views={['month', 'week', 'day', 'agenda']} // カレンダーの切り替えを有効化
           components={{
             event: ({ event }) => (
               <div

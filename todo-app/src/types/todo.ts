@@ -6,4 +6,4 @@ export interface Todo {
   updatedAt: string;
   dueDate: string;
   status: 'Not Started' | 'In Progress' | 'Completed';
-}
+}  

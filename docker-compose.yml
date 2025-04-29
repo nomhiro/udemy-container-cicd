@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   todo-app:
+    image: todo-app:latest
     build:
       context: ./todo-app
       dockerfile: Dockerfile
@@ -9,7 +10,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./todo-app:/app
+    env_file:
+      - ./todo-app/.env.local
     stdin_open: true
     tty: true
